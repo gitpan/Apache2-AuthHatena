@@ -5,10 +5,10 @@ use Apache2::RequestRec ();
 use Apache2::ServerUtil ();
 use Apache2::RequestIO ();
 use Apache2::RequestUtil ();
-use Apache2::Log;
-use Apache2::Access;
-use Apache2::Module;
-use Apache2::CmdParms;
+use Apache2::Log ();
+use Apache2::Access ();
+use Apache2::Module ();
+use Apache2::CmdParms ();
 use Apache2::Const -compile => qw(
     FORBIDDEN OK DECLINED DIR_MAGIC_TYPE REDIRECT NOT_FOUND OR_AUTHCFG TAKE1
 );
@@ -19,7 +19,7 @@ use Digest::MD5;
 use Time::Piece;
 use Hatena::API::Auth;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 my @directives = (
     {
@@ -52,7 +52,7 @@ my @directives = (
     },
 );
 
-Apache2::Module::add(__PACKAGE__, \@directives); 
+eval { Apache2::Module::add(__PACKAGE__, \@directives); };
 
 sub HatenaAuthKey {
     my ($i, $params, $arg) = @_;
@@ -140,7 +140,7 @@ sub authz_handler {
             $validuser = 1;
         }
     }
-    $r->set_handlers(PerlFixupHandler => \&fixup);
+#    $r->set_handlers(PerlFixupHandler => \&fixup);
 
     if ($validuser) {
         return Apache2::Const::OK;
@@ -395,7 +395,7 @@ L<http://auth.hatena.ne.jp>
 
 =head1 AUTHOR
 
-L<Nobuo Danjou, danjou@hatena.ne.jp>
+Nobuo Danjou, L<danjou@hatena.ne.jp>
 
 =head1 COPYRIGHT AND LICENSE
 
