@@ -1,5 +1,8 @@
 Revision history for Perl extension Apache2::AuthHatena.
 
+0.03  Sun Jun 10 22:45:30 2007
+    - fixed logout functionality, HTML styling, deleted needless codes.
+
 0.02  Sun Jun 10 18:24:30 2007
     - fixed installation problem.
 

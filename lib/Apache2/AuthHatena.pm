@@ -10,7 +10,7 @@ use Apache2::Access ();
 use Apache2::Module ();
 use Apache2::CmdParms ();
 use Apache2::Const -compile => qw(
-    FORBIDDEN OK DECLINED DIR_MAGIC_TYPE REDIRECT NOT_FOUND OR_AUTHCFG TAKE1
+    FORBIDDEN OK DECLINED REDIRECT OR_AUTHCFG TAKE1
 );
 use APR::Table ();
 use CGI;
@@ -19,7 +19,7 @@ use Digest::MD5;
 use Time::Piece;
 use Hatena::API::Auth;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 my @directives = (
     {
@@ -96,9 +96,6 @@ sub authen_handler {
         if ($r->args eq 'logout') {
             $r->set_handlers(PerlResponseHandler => \&logout);
             return Apache2::Const::OK;
-        } elsif ($r->args eq 'cleanup') {
-            $r->set_handlers(PerlResponseHandler => \&cleanup);
-            return Apache2::Const::OK;
         } elsif ($r->args eq 'about') {
             $r->set_handlers(PerlResponseHandler => \&about);
             return Apache2::Const::OK;
@@ -140,7 +137,6 @@ sub authz_handler {
             $validuser = 1;
         }
     }
-#    $r->set_handlers(PerlFixupHandler => \&fixup);
 
     if ($validuser) {
         return Apache2::Const::OK;
@@ -215,54 +211,40 @@ sub logout {
     );
     $r->err_headers_out->set('Set-Cookie' => $cookie);
     $r->content_type('text/html; charset=UTF-8');
-    my $html = '';
-    if ($r->headers_in->{'Accept-Language'} =~ /ja/) {
-        $html = &html_message(
-            'sign out',
-            $realm,
-            "ログアウトしました. <a href=\"./\">インデックス</a>に戻りますか?",
-            'ja'
-        );
+    my $lang = $r->headers_in->{'Accept-Language'} =~ /ja/ ? 'ja' : 'en';
+    my $message = '';
+    if ($lang eq 'ja') {
+        $message = <<END
+<p>ログアウトしました. </p>
+<ul>
+<li><a href=\"./\">インデックス</a>に戻りますか?</li>
+<li><a href="http://www.hatena.ne.jp">はてな</a>に行きますか?</li>
+</ul>
+END
     } else {
-        $html = &html_message(
-            'sign out',
-            $realm,
-            "You've been signed out. Go to <a href=\"./\">index</a>?",
-            'en'
-        );
+        $message = <<END
+<p>You've been signed out.</p>
+<ul>
+<li>Go to <a href="./">index</a>?</li>
+<li>Or <a href="http://www.hatena.ne.jp">Hatena</a>?</li>
+</ul>
+END
     }
-    $r->print($html);
+    $r->print(&html_message('sign out', $realm, $message, $lang));
     return Apache2::Const::OK;
-}
-
-sub cleanup {
-    my $r = shift;
-    my $cf = Apache2::Module::get_config(__PACKAGE__, $r->server);
-    my $callback = $cf->{callback};
-    my $url = "http://www.hatena.ne.jp/logout?backurl=$callback?logout";
-    $r->err_headers_out->add(Location => $url);
-    return Apache2::Const::REDIRECT;
 }
 
 sub about {
     my $r = shift;
     $r->content_type('text/html; charset=UTF-8');
     my $html = &html_message(
-        'Hatena Auth API',
-        'Hatena Auth API',
-        "ktkr!! Go to <a href=\"./\">index</a>?"
+        'About Apache2::AuthHatena',
+        'Apache2::AuthHatena',
+        'A easy way to share fun with your friends.',
+        'en'
     );
     $r->print($html);
     return Apache2::Const::OK;
-}
-
-sub fixup {
-    my $r = shift;
-    if (-d $r->filename && $r->handler eq '') {
-        $r->handler(Apache2::Const::DIR_MAGIC_TYPE);
-        return Apache2::Const::OK;
-    }
-    return Apache2::Const::DECLINED;
 }
 
 sub forbidden_handler {
@@ -277,12 +259,12 @@ sub forbidden_handler {
         if ($lang eq 'ja') {
             $message = <<"END";
 こんにちは, id:${name}さん! あなたは閲覧許可ユーザーではありません. <br>
-もし別のアカウントがあれば、<a href=\"$callback?cleanup\">はてなでログアウト</a>してからもう一度おこしください。
+もし別のアカウントがあれば、<a href=\"$callback?logout\">ログアウト</a> (はてなからも) してからもう一度お越し下さい.
 END
         } else {
             $message = <<"END";
-Hi, id:${name}! Sorry, you are not permitted. if you have other IDs, <br>
-<a href=\"$callback?cleanup\">sign out from hatena</a> and come again!",
+Hi, id:${name}! Sorry, you are not permitted.<br>
+If you have other IDs, <a href=\"$callback?logout\">sign out</a> (also from Hatena) and come again!
 END
         }
     } else {
@@ -303,6 +285,7 @@ END
 sub html_message {
     my ($title, $h1, $message, $lang) = @_;
     $lang ||='ja';
+    $message =~ /^</ or $message = "<p>$message</p>";
     return <<"EOF";
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ja">
@@ -318,6 +301,7 @@ sub html_message {
                 padding: 20px;
                 border: 2px solid #aaa;
                 font-family: "Lucida Grande", verdana, sans-serif;
+                line-height: 1.5em;
             }
             address {
                 text-align: right;
@@ -331,7 +315,7 @@ sub html_message {
     </head>
     <body>
         <h1>$h1</h1>
-        <p>$message</p>
+        $message
         <address>powered by <a href="http://search.cpan.org/~danjou/Apache2-AuthHatena/">Apache2::AuthHatena</a></address>
     </body>
 </html>
