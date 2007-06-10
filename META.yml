@@ -1,0 +1,19 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Apache2-AuthHatena
+version:      0.01
+version_from: lib/Apache2/AuthHatena.pm
+installdirs:  site
+requires:
+    CGI:                           0
+    Class::Accessor::Fast:         0
+    Class::ErrorHandler:           0
+    Digest::MD5:                   0
+    Hatena::API::Auth:             0.04
+    JSON::Syck:                    0
+    LWP::UserAgent:                0
+    mod_perl2:                     2.000001
+    Time::Piece:                   0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17

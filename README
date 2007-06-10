@@ -1,0 +1,60 @@
+NAME
+    Apache2::AuthHatena - Simple authentication mod_perl module using Hatena
+    Auth API
+
+SYNOPSIS
+      LoadModule perl_module modules/mod_perl.so
+      PerlLoadModule Apache2::AuthHatena
+
+      AuthType Hatena
+      AuthName "My private documents"
+      HatenaAuthKey yourauthkeygoeshere
+      HatenaAuthSecret youauthsecretgoeshere
+      HatenaAuthCallback http://sample.com/path/to/callback
+      require valid-user
+
+DESCRIPTION
+    This mod_perl module allows you to implement easy authentication with
+    Hatena Authentication API. You need Hatena Authentication API key from
+    <http://auth.hatena.ne.jp>.
+
+    Add the folloing lines to you Apache configuration file to load this
+    module:
+
+      LoadModule perl_module modules/mod_perl.so
+      PerlLoadModule Apache2::AuthHatena
+
+    And then you can write .htaccess file like this:
+
+      AuthType Hatena
+      AuthName "My private documents"
+      HatenaAuthKey yourauthkeygoeshere
+      HatenaAuthSecret youauthsecretgoeshere
+      HatenaAuthCallback http://sample.com/path/to/callback
+      require valid-user
+
+    AuthType must be "hatena", and each of HatenaAuthKey, HatenaAuthSecret,
+    and HatenaAuthCallback should be the value you've got from
+    <http://auth.hatena.ne.jp>. If you assign 'valid-user' to 'require'
+    directive, it means all people who has Hatena ID can see the protected
+    documents. When you want to show the document only to, for example,
+    id:jkondo and id:naoya, you can write like this:
+
+      require user jkondo naoya
+
+COMPATIBILITY
+    This module will only work with mod_perl2. mod_perl1 is not supported.
+
+SEE ALSO
+    Hatena::API::Auth <http://auth.hatena.ne.jp>
+
+AUTHOR
+    "Nobuo Danjou, danjou@hatena.ne.jp"
+
+COPYRIGHT AND LICENSE
+    Copyright (C) 2007 by Nobuo Danjou
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself, either Perl version 5.8.6 or, at
+    your option, any later version of Perl 5 you may have available.
+
