@@ -1,0 +1,9 @@
+PerlLoadModule Apache2::AuthHatena
+<Location />
+    AuthType Hatena
+    AuthName "Apache2::AuthHatena test"
+    HatenaAuthKey "myauthkey"
+    HatenaAuthSecret "myauthsecret"
+    HatenaAuthCallback /callback
+    require valid-user
+</Location>

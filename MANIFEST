@@ -3,5 +3,7 @@ Makefile.PL
 MANIFEST
 README
 t/Apache2-AuthHatena.t
+t/TEST.PL
+t/conf/extra.last.conf.in
 lib/Apache2/AuthHatena.pm
 META.yml                                 Module meta-data (added by MakeMaker)

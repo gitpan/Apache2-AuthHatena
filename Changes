@@ -1,5 +1,8 @@
 Revision history for Perl extension Apache2::AuthHatena.
 
+0.04  Mon May 12 12:37:18 JST 2007
+    - removed harmful code for AuthType directive.
+
 0.03  Sun Jun 10 22:45:30 2007
     - fixed logout functionality, HTML styling, deleted needless codes.
 
@@ -7,6 +10,6 @@ Revision history for Perl extension Apache2::AuthHatena.
     - fixed installation problem.
 
 0.01  Fri Jun  8 00:13:01 2007
-	- original version; created by h2xs 1.23 with options
-		-X -A -n Apache2::AuthHatena
+    - original version; created by h2xs 1.23 with options
+        -X -A -n Apache2::AuthHatena
 

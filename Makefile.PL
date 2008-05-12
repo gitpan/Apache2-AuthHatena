@@ -1,6 +1,9 @@
 use 5.008;
 use ExtUtils::MakeMaker;
+use Apache::TestMM qw(test clean);
 
+Apache::TestMM::filter_args();
+Apache::TestMM::generate_script('t/TEST');
 
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
@@ -8,6 +11,7 @@ WriteMakefile(
     NAME              => 'Apache2::AuthHatena',
     VERSION_FROM      => 'lib/Apache2/AuthHatena.pm', # finds $VERSION
     PREREQ_PM         => {
+        Test::More => 0.32,
         mod_perl2 => 2.000001,
         Class::Accessor::Fast => 0,
         Class::ErrorHandler => 0,

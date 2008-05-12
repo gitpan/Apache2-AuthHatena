@@ -19,7 +19,7 @@ use Digest::MD5;
 use Time::Piece;
 use Hatena::API::Auth;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 my @directives = (
     {
@@ -43,16 +43,14 @@ my @directives = (
         args_how     => Apache2::Const::TAKE1,
         errmsg       => 'HatenaAuthCallback http://sample.com/yourcallback',
     },
-    {
-        name => 'AuthType',
-        func => __PACKAGE__ . '::AuthType',
-        req_override => Apache2::Const::OR_AUTHCFG,
-        args_how     => Apache2::Const::TAKE1,
-        errmsg       => 'AuthType Hatena',
-    },
 );
 
-eval { Apache2::Module::add(__PACKAGE__, \@directives); };
+eval {
+    Apache2::Module::add(__PACKAGE__, \@directives);
+    Apache2::ServerUtil->server->push_handlers(
+        PerlAuthenHandler => \&authen_handler
+    );
+};
 
 sub HatenaAuthKey {
     my ($i, $params, $arg) = @_;
@@ -69,13 +67,6 @@ sub HatenaAuthCallback {
     my ($i, $params, $arg) = @_;
     $i = Apache2::Module::get_config( __PACKAGE__, $params->server);
     $i->{'callback'} = $arg;
-}
-
-sub AuthType {
-    my ($i, $params, $arg) = @_;
-    if ($arg eq 'Hatena') {
-        Apache2::ServerUtil->server->push_handlers(PerlAuthenHandler => \&authen_handler);
-    }
 }
 
 sub authen_handler {
