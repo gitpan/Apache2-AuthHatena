@@ -1,23 +1,29 @@
---- #YAML:1.0
-name:                Apache2-AuthHatena
-version:             0.04
-abstract:            Simple authentication mod_perl module using Hatena Auth API
-license:             ~
-author:              
-    - Nobuo Danjou <danjou@hatena.ne.jp>
-generated_by:        ExtUtils::MakeMaker version 6.42
-distribution_type:   module
-requires:     
-    CGI:                           0
-    Class::Accessor::Fast:         0
-    Class::ErrorHandler:           0
-    Digest::MD5:                   0
-    Hatena::API::Auth:             0.04
-    JSON::Syck:                    0
-    LWP::UserAgent:                0
-    mod_perl2:                     2.000001
-    Test::More:                    0.32
-    Time::Piece:                   0
+---
+abstract: 'Simple authentication mod_perl module using Hatena Auth API'
+author:
+  - 'Nobuo Danjou, L<danjou@hatena.ne.jp>'
+distribution_type: module
+generated_by: 'Module::Install version 0.77'
+license: perl
 meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
-    version: 1.3
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Apache2-AuthHatena
+no_index:
+  directory:
+    - inc
+    - t
+requires:
+  CGI: 0
+  Class::Accessor::Fast: 0
+  Class::ErrorHandler: 0
+  Digest::MD5: 0
+  Hatena::API::Auth: 0.04
+  JSON::Syck: 0
+  LWP::UserAgent: 0
+  Test::More: 0.32
+  Time::Piece: 0
+  mod_perl2: 2.000001
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.05

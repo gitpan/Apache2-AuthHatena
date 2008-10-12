@@ -1,28 +1,31 @@
 use 5.008;
-use ExtUtils::MakeMaker;
-use Apache::TestMM qw(test clean);
+use inc::Module::Install;
+
+BEGIN {
+    eval {
+        require ModPerl::MM;
+        require Apache::TestMM;
+    };
+    if ($@) {
+        exit 0;
+    }
+    Apache::TestMM->import( qw( test clean ) );
+}
+
+name 'Apache2-AuthHatena';
+all_from 'lib/Apache2/AuthHatena.pm';
+requires Test::More => 0.32;
+requires mod_perl2 => 2.000001;
+requires Class::Accessor::Fast => 0;
+requires Class::ErrorHandler => 0;
+requires Hatena::API::Auth => 0.04;
+requires LWP::UserAgent => 0;
+requires JSON::Syck => 0;
+requires CGI => 0;
+requires Digest::MD5 => 0;
+requires Time::Piece => 0;
 
 Apache::TestMM::filter_args();
 Apache::TestMM::generate_script('t/TEST');
 
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
-WriteMakefile(
-    NAME              => 'Apache2::AuthHatena',
-    VERSION_FROM      => 'lib/Apache2/AuthHatena.pm', # finds $VERSION
-    PREREQ_PM         => {
-        Test::More => 0.32,
-        mod_perl2 => 2.000001,
-        Class::Accessor::Fast => 0,
-        Class::ErrorHandler => 0,
-        Hatena::API::Auth => 0.04,
-        LWP::UserAgent => 0,
-        JSON::Syck => 0,
-        CGI => 0,
-        Digest::MD5 => 0,
-        Time::Piece => 0,
-    }, # e.g., Module::Name => 1.1
-    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM  => 'lib/Apache2/AuthHatena.pm', # retrieve abstract from module
-       AUTHOR         => 'Nobuo Danjou <danjou@hatena.ne.jp>') : ()),
-);
+WriteAll;

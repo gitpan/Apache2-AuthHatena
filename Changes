@@ -1,5 +1,9 @@
 Revision history for Perl extension Apache2::AuthHatena.
 
+0.05  Sun Oct 12 15:00:00 JST 2008
+	- now needs ModPerl::MM and Apache::TestMM to run perl Makefile.PL.
+	- use inc::Module::Install;
+
 0.04  Mon May 12 12:37:18 JST 2007
     - removed harmful code for AuthType directive.
 
